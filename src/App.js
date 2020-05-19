@@ -1,6 +1,7 @@
 import React from 'react';
 import { ContentfulClient, ContentfulProvider, useContentful} from 'react-contentful';
 import './App.css';
+import apiconfig from './config.js'
 
 const Page = props => {
   const { data, error, fetched, loading } = useContentful({
@@ -68,10 +69,7 @@ const Page = props => {
 }
 
 
-const contentfulClient = new ContentfulClient({
-  accessToken: 'NnsVrwmMZFJlsgBjsK_eBQ5hkCqe_kRhyOdITeExp-8',
-  space: '5lza0qg1mjjz',
-});
+const contentfulClient = new ContentfulClient(apiconfig);
 
 
 const App = () => (
