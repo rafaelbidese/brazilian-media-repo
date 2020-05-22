@@ -1,99 +1,170 @@
-import React from 'react';
-import { ContentfulClient, ContentfulProvider, useContentful} from 'react-contentful';
-import './App.css';
-import apiconfig from './config.js'
-import { Card, CardContent, Typography, Avatar, Link, Chip, CardActions} from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles';
-
+import React from "react";
+import {
+  ContentfulClient,
+  ContentfulProvider,
+  useContentful,
+} from "react-contentful";
+import "./App.css";
+import apiconfig from "./config.js";
+import {
+  Card,
+  CardContent,
+  Typography,
+  Avatar,
+  Link,
+  Chip,
+  CardActions,
+  Grid,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import GitHubIcon from "@material-ui/icons/GitHub";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    overflow: 'hidden',
-    padding: theme.spacing(0, 3),
-  },
-  paper: {
-    maxWidth: 600,
-    margin: `${theme.spacing(1)}px auto`,
-    padding: theme.spacing(2),
-  },
-  media : {
+  wrapper: {
     display: "flex",
+    flexDirection: "column",
+    alignContent: "center",
+    alignItems: "center",
+  },
+  gridcontainer: {
+    maxWidth: "1600px",
+  },
+  griditem: {
+    minWidth: "530px",
+  },
+  media: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
     margin: "10px 50px",
   },
   image: {
-    height:"300px",
+    height: "300px",
     width: "200px",
-    margin: "auto",
-  }
+  },
+  content: {
+    flex: 1,
+  },
+  heart: {
+    height: "20px",
+    width: "20px",
+    color: "#4267B2",
+    alignSelf: "center",
+  },
+  github: {
+    height: "20px",
+    width: "20px",
+    alignSelf: "center",
+  },
+  githubLink: {
+    fontWeight: "bold",
+    color: "#111",
+  },
+  signature: {
+    margin: "20px",
+  },
 }));
- 
- const Page = props => {
 
+const Page = (props) => {
   const classes = useStyles();
 
   const { data, error, fetched, loading } = useContentful({
-    contentType: 'info',
+    contentType: "info",
     query: {
       // 'fields.name': `/${props.match.slug || ''}`,
-      select: 'fields'
-
-    }
+      select: "fields",
+    },
   });
- 
+
   if (loading || !fetched) {
     return null;
   }
- 
+
   if (error) {
     console.error(error);
     return null;
   }
- 
+
   if (!data) {
     return <p>Page does not exist.</p>;
   }
- 
+
   // See the Contentful query response
   console.debug(data);
- 
+
   // Process and pass in the loaded `data` necessary for your page or child components.
   return (
-    <div style={{display: "flex", flexDirection:"column", justifyContent: "center"}}>
-      <h2 style={{textAlign:"center"}}>Brazilian media repository</h2>
-      {data.items.map(item => (
-        <Card className={classes.media}>
-          <Avatar 
-          variant="square"
-          alt="Remy Sharp"
-          className={classes.image}
-          src={item.fields.thumbnail.fields.file.url}
-          />
-          <CardContent>
-            <Typography gutterBottom variant="subtitle1">{item.fields.titleEn}  ({item.fields.year})</Typography>
-            <Typography gutterBottom variant="subtitle2" color="textSecondary">{item.fields.titleBr}</Typography>
-            {item.fields.tags["tags"].map(tag=>(<Chip label={tag} />))}
-            <Typography variant="body2" gutterBottom paragraph>{item.fields.description}</Typography>
-            <Typography variant="body2" color="textSecondary">{item.fields.author}</Typography>
-            <CardActions>
-            <Link href={item.fields.url} variant="body2">Trailer</Link>
-
-            </CardActions>
-          </CardContent>
-        </Card>
-      ))}
+    <>
+      <div className={classes.wrapper}>
+        <h2 style={{ textAlign: "center" }}>Brazilian media repository</h2>
+        <Grid
+          className={classes.gridcontainer}
+          container
+          spacing={2}
+          direction="row"
+          justify="center"
+          alignItems="flex-start"
+        >
+          {data.items.map((item) => (
+            <Grid item xs={6} sm={6} md={6} lg={6} className={classes.griditem}>
+              <Card className={classes.media}>
+                <Avatar
+                  variant="square"
+                  alt="Movie Avatar"
+                  className={classes.image}
+                  src={item.fields.thumbnail.fields.file.url}
+                />
+                <CardContent className={classes.content}>
+                  <Typography variant="subtitle1">
+                    {item.fields.titleEn} ({item.fields.year})
+                  </Typography>
+                  <Typography
+                    gutterBottom
+                    variant="subtitle2"
+                    color="textSecondary"
+                  >
+                    {item.fields.titleBr}
+                  </Typography>
+                  {item.fields.tags["tags"].map((tag) => (
+                    <Chip label={tag} />
+                  ))}
+                  <Typography variant="body2" paragraph>
+                    {item.fields.description}
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    {item.fields.author}
+                  </Typography>
+                  <CardActions>
+                    <Link href={item.fields.url} variant="body2">
+                      Trailer
+                    </Link>
+                  </CardActions>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+        <Typography className={classes.signature} variant="body2">
+          Made with <FavoriteIcon className={classes.heart} /> by{" "}
+          <Link
+            className={classes.githubLink}
+            href="https://github.com/rafaelbidese/brazilian-media-repo"
+          >
+            Rafael Bidese <GitHubIcon className={classes.github} />
+          </Link>
+        </Typography>
       </div>
-    )
-}
+    </>
+  );
+};
 
 const contentfulClient = new ContentfulClient(apiconfig);
 
-
 const App = () => (
   <ContentfulProvider client={contentfulClient}>
-    <Page/>
+    <Page />
   </ContentfulProvider>
-)
-
+);
 
 export default App;
