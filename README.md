@@ -9,5 +9,5 @@ Create a .env file at the root of the folder and add:
 `REACT_APP_SPACE=<SPACEID>`
 
 <p align="center">
-  <img height="480" height="300" src="/images/snap.PNG">
+  <img width="1000" height="250" src="/images/snap.PNG">
 </p>
