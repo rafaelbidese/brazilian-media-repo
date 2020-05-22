@@ -15,6 +15,8 @@ import {
   Chip,
   CardActions,
   Grid,
+  AppBar,
+  Toolbar,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
@@ -27,7 +29,11 @@ const useStyles = makeStyles((theme) => ({
     alignContent: "center",
     alignItems: "center",
   },
+  appbar: {
+    alignItems: "center",
+  },
   gridcontainer: {
+    margin: "10px 0",
     maxWidth: "1600px",
   },
   griditem: {
@@ -74,6 +80,7 @@ const Page = (props) => {
     query: {
       // 'fields.name': `/${props.match.slug || ''}`,
       select: "fields",
+      order: "-fields.year",
     },
   });
 
@@ -97,7 +104,12 @@ const Page = (props) => {
   return (
     <>
       <div className={classes.wrapper}>
-        <h2 style={{ textAlign: "center" }}>Brazilian media repository</h2>
+        <AppBar position="static" className={classes.appbar}>
+          <Toolbar>
+            <Typography variant="h6">Brazilian media repository</Typography>
+          </Toolbar>
+        </AppBar>
+        <Typography></Typography>
         <Grid
           className={classes.gridcontainer}
           container
@@ -118,13 +130,16 @@ const Page = (props) => {
                 <CardContent className={classes.content}>
                   <Typography variant="subtitle1">
                     {item.fields.titleEn} ({item.fields.year})
+                    {console.log(typeof item.fields.year)}
                   </Typography>
                   <Typography
                     gutterBottom
                     variant="subtitle2"
                     color="textSecondary"
                   >
-                    {item.fields.titleBr}
+                    {item.fields.titleBr
+                      ? item.fields.titleBr
+                      : "There's no translated title"}
                   </Typography>
                   {item.fields.tags["tags"].map((tag) => (
                     <Chip label={tag} />
@@ -136,9 +151,20 @@ const Page = (props) => {
                     {item.fields.author}
                   </Typography>
                   <CardActions>
-                    <Link href={item.fields.url} variant="body2">
-                      Trailer
-                    </Link>
+                    {item.fields.url ? (
+                      <Link href={item.fields.url} variant="body2">
+                        Full-Movie
+                      </Link>
+                    ) : (
+                      ""
+                    )}
+                    {item.fields.trailerUrl ? (
+                      <Link href={item.fields.trailerUrl} variant="body2">
+                        Trailer
+                      </Link>
+                    ) : (
+                      ""
+                    )}
                   </CardActions>
                 </CardContent>
               </Card>
@@ -146,12 +172,21 @@ const Page = (props) => {
           ))}
         </Grid>
         <Typography className={classes.signature} variant="body2">
-          Made with <FavoriteIcon className={classes.heart} /> by{" "}
+          Made with <FavoriteIcon className={classes.heart} /> by
           <Link
             className={classes.githubLink}
             href="https://github.com/rafaelbidese/brazilian-media-repo"
           >
-            Rafael Bidese <GitHubIcon className={classes.github} />
+            {" "}
+            Rafael Bidese
+          </Link>{" "}
+          and
+          <Link
+            className={classes.githubLink}
+            href="https://github.com/gabiitokazu"
+          >
+            {" "}
+            Ana Gabriela Itokazu <GitHubIcon className={classes.github} />
           </Link>
         </Typography>
       </div>
