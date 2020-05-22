@@ -5,7 +5,6 @@ import {
   useContentful,
 } from "react-contentful";
 import "./App.css";
-import apiconfig from "./config.js";
 import {
   Card,
   CardContent,
@@ -130,7 +129,6 @@ const Page = (props) => {
                 <CardContent className={classes.content}>
                   <Typography variant="subtitle1">
                     {item.fields.titleEn} ({item.fields.year})
-                    {console.log(typeof item.fields.year)}
                   </Typography>
                   <Typography
                     gutterBottom
@@ -194,7 +192,10 @@ const Page = (props) => {
   );
 };
 
-const contentfulClient = new ContentfulClient(apiconfig);
+const contentfulClient = new ContentfulClient({
+  accessToken: process.env.REACT_APP_ACCESS_TOKEN,
+  space: process.env.REACT_APP_SPACE,
+});
 
 const App = () => (
   <ContentfulProvider client={contentfulClient}>
